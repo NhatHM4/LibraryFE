@@ -1,28 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BookModel from "../../models/BookModel";
 import SpinLoading from "../Utils/SpinLoading";
 import SearchBook from "./components/SearchBook";
+import Pagination from "../Utils/Pagination";
 
 const SearchBooksPage = () => {
   const [books, setBooks] = useState<BookModel[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [httpError, setHttpError] = useState(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalElements, setTotalElements] = useState<number>(0);
+  const [size] = useState(4)
+  const [searchUrl, setSearchUrl] = useState<string>('')
+  const [search,setSearch] = useState<string>('')
+
+
+  const paginate = (id: number) => {
+    setCurrentPage(id);
+  };
+
+  const handleSubmitSearch = ()=>{
+    console.log('vo')
+    if (search !== '') {
+      setSearchUrl(`search/findByTitleContaining?title=${search}`)
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       const baseUrl = "http://localhost:8080/api/books";
-      const url = `${baseUrl}?page=0&size=5`;
+      let url : string = ''
+      if (searchUrl === '') {
+        url = `${baseUrl}?page=${currentPage-1}&size=${size}`;
+      } else {
+        url = `${baseUrl}/${searchUrl}&page=${currentPage-1}&size=${size}`
+      }
+      console.log(url)
       const response = await fetch(url);
-
+  
       if (!response.ok) {
         throw new Error("Something went wrong !!!");
       }
-
+  
       const responseJson = await response.json();
-
+  
+      setTotalPages(responseJson.page.totalPages);
+      setTotalElements(responseJson.page.totalElements);
       const reponseData = responseJson._embedded.books;
-
+  
       const loadedBooks: BookModel[] = [];
-
+  
       for (const key in reponseData) {
         loadedBooks.push({
           id: reponseData[key].id,
@@ -42,7 +70,7 @@ const SearchBooksPage = () => {
       setIsLoading(false);
       setHttpError(error.message);
     });
-  }, []);
+  }, [currentPage,searchUrl]);
 
   if (isLoading) {
     return <SpinLoading />;
@@ -53,7 +81,9 @@ const SearchBooksPage = () => {
       <p>{httpError}</p>
     </div>;
   }
-
+  
+  let calculate = size < (totalElements % currentPage) ? (totalElements % currentPage) : size;
+  console.log(calculate)
   return (
     <div>
       <div className="container">
@@ -65,9 +95,10 @@ const SearchBooksPage = () => {
                   type="search"
                   className="form-control me-2"
                   placeholder="Search"
-                  aria-aria-labelledby="Search"
+                  aria-labelledby="Search"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
-                <button className="btn btn-outline-success">Search</button>
+                <button className="btn btn-outline-success" onClick={()=> handleSubmitSearch()}>Search</button>
               </div>
             </div>
             <div className="col-4">
@@ -115,16 +146,20 @@ const SearchBooksPage = () => {
             </div>
           </div>
           <div className="mt-3">
-            <h5>Number of results: 5</h5>
+            <h5>Number of results: {totalElements}</h5>
           </div>
-          <p>1 to 2 of 22 items</p>
+          
+          <p>{(currentPage-1)*size + 1} to {(currentPage-1)*size + size } of {totalElements} items</p>
           {books.map((book) => {
-            return (
-              <SearchBook book={book} key = {book.id}/>
-            )
+            return <SearchBook book={book} key={book.id} />;
           })}
         </div>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        paginate={paginate}
+      ></Pagination>
     </div>
   );
 };
