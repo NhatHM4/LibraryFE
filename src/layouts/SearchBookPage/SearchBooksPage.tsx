@@ -14,6 +14,7 @@ const SearchBooksPage = () => {
   const [size] = useState(4)
   const [searchUrl, setSearchUrl] = useState<string>('')
   const [search,setSearch] = useState<string>('')
+  const [category, setCategory] = useState<string>('All')
 
 
   const paginate = (id: number) => {
@@ -21,10 +22,25 @@ const SearchBooksPage = () => {
   };
 
   const handleSubmitSearch = ()=>{
-    console.log('vo')
+    setCurrentPage(1)
     if (search !== '') {
-      setSearchUrl(`search/findByTitleContaining?title=${search}`)
+      setSearchUrl(`search/findByTitleContaining?title=${search}&page=<page>&size=${size}`)
     }
+  }
+
+  const categoryField = (name : string) => {
+    setCurrentPage(1)
+    if (
+      name.toLowerCase() == 'fe' ||
+      name.toLowerCase() == 'be' ||
+      name.toLowerCase() == 'data' ||
+      name.toLowerCase() == 'do'
+    ){
+      setSearchUrl(`search/findByCategory?category=${name.toLowerCase()}&page=<page>&size=${size}`)
+    } else {
+      setSearchUrl('');
+    }
+    setCategory(name.toUpperCase());
   }
 
   useEffect(() => {
@@ -34,9 +50,9 @@ const SearchBooksPage = () => {
       if (searchUrl === '') {
         url = `${baseUrl}?page=${currentPage-1}&size=${size}`;
       } else {
-        url = `${baseUrl}/${searchUrl}&page=${currentPage-1}&size=${size}`
+        url = `${baseUrl}/${searchUrl}`
       }
-      console.log(url)
+      url.replace('<page>',`${currentPage-1}`)
       const response = await fetch(url);
   
       if (!response.ok) {
@@ -82,8 +98,7 @@ const SearchBooksPage = () => {
     </div>;
   }
   
-  let calculate = size < (totalElements % currentPage) ? (totalElements % currentPage) : size;
-  console.log(calculate)
+  console.log((totalElements % size) > (totalElements - currentPage*size ) ? size + (totalElements % size) : size)
   return (
     <div>
       <div className="container">
@@ -110,33 +125,33 @@ const SearchBooksPage = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Category
+                  {category}
                 </button>
                 <ul
                   className="dropdown-menu"
                   aria-labelledby="dropdownMenuButton1"
                 >
-                  <li>
+                  <li onClick={() => categoryField('all')}>
                     <a className="dropdown-item" href="#">
                       All
                     </a>
                   </li>
-                  <li>
+                  <li onClick={() => categoryField('fe')}>
                     <a className="dropdown-item" href="#">
                       FrontEnd
                     </a>
                   </li>
-                  <li>
+                  <li onClick={() => categoryField('be')}>
                     <a className="dropdown-item" href="#">
                       BackEnd
                     </a>
                   </li>
-                  <li>
+                  <li onClick={() => categoryField('data')}>
                     <a className="dropdown-item" href="#">
                       Data
                     </a>
                   </li>
-                  <li>
+                  <li onClick={() => categoryField('do')}>
                     <a className="dropdown-item" href="#">
                       Devops
                     </a>
@@ -145,21 +160,39 @@ const SearchBooksPage = () => {
               </div>
             </div>
           </div>
-          <div className="mt-3">
-            <h5>Number of results: {totalElements}</h5>
-          </div>
+          {
+            totalElements > 0 ?
+            <>
+              <div className="mt-3">
+                <h5>Number of results: {totalElements}</h5>
+              </div>
+              <p>{(currentPage-1)*size + 1} to { (totalElements % size) > (totalElements - currentPage*size ) ? size + (totalElements % size) : size } of {totalElements} items</p>
+              {books.map((book) => {
+                return <SearchBook book={book} key={book.id} />;
+              })}
+            </>
+            :
+            <>
+              <div className='m-5'>
+                  <h3>
+                      Can't find what you are looking for?
+                  </h3>
+                  <a type='button' className='btn main-color btn-md px-4 me-md-2 fw-bold text-white'
+                      href='#'>Library Services</a>
+              </div>
+            </>
+          }
           
-          <p>{(currentPage-1)*size + 1} to {(currentPage-1)*size + size } of {totalElements} items</p>
-          {books.map((book) => {
-            return <SearchBook book={book} key={book.id} />;
-          })}
         </div>
       </div>
-      <Pagination
+      {
+        totalPages > 1 && 
+        <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         paginate={paginate}
       ></Pagination>
+      }
     </div>
   );
 };
