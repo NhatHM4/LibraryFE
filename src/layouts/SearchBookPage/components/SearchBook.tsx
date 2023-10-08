@@ -1,5 +1,6 @@
 import React from "react";
 import BookModel from "../../../models/BookModel";
+import { Link } from "react-router-dom";
 
 interface BookProps {
   book: BookModel;
@@ -46,9 +47,9 @@ const SearchBook: React.FC<BookProps> = (props) => {
           </div>
         </div>
         <div className="col-md-4 d-flex justify-content-center align-items-center">
-          <a className="btn btn-md main-color text-white" href="#">
+          <Link className="btn btn-md main-color text-white" to={`/checkout/${props.book.id}`}>
             ViewDetail
-          </a>
+          </Link>
         </div>
       </div>
     </div>

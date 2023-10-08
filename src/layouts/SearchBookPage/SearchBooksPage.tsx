@@ -98,7 +98,6 @@ const SearchBooksPage = () => {
     </div>;
   }
   
-  console.log((totalElements % size) > (totalElements - currentPage*size ) ? size + (totalElements % size) : size)
   return (
     <div>
       <div className="container">
@@ -166,7 +165,7 @@ const SearchBooksPage = () => {
               <div className="mt-3">
                 <h5>Number of results: {totalElements}</h5>
               </div>
-              <p>{(currentPage-1)*size + 1} to { (totalElements % size) > (totalElements - currentPage*size ) ? size + (totalElements % size) : size } of {totalElements} items</p>
+              <p>{(currentPage-1)*size + 1} to { size * currentPage <= totalElements ? size * currentPage : totalElements} of {totalElements} items</p>
               {books.map((book) => {
                 return <SearchBook book={book} key={book.id} />;
               })}
