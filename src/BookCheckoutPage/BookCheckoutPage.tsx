@@ -100,7 +100,7 @@ const BookCheckoutPage = () => {
       <p>{httpError}</p>
     </div>;
   }
-
+  console.log(totalStars)
   return (
     <div>
       <div className="container d-none d-lg-block">
@@ -122,7 +122,7 @@ const BookCheckoutPage = () => {
               <h2>{book?.title}</h2>
               <h5 className="text-primary">{book?.author}</h5>
               <p className="lead">{book?.description}</p>
-              <StarsReview rating={3} size={32} />
+              <StarsReview rating={totalStars} size={32} />
             </div>
           </div>
           <CheckoutAndReviewBox book={book} mobile={false} />
@@ -148,7 +148,7 @@ const BookCheckoutPage = () => {
             <h2>{book?.title}</h2>
             <h5 className="text-primary">{book?.author}</h5>
             <p className="lead">{book?.description}</p>
-            <StarsReview rating={4.5} size={32} />
+            <StarsReview rating={totalStars} size={32} />
           </div>
         </div>
         <CheckoutAndReviewBox book={book} mobile={true} />

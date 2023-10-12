@@ -9,7 +9,6 @@ const Review:React.FC<{review: ReviewModel}> = (props) => {
     const dateYear = date.getFullYear();
     const dateRender = longMonth + ' ' + dateDay + ' ' + dateYear;
 
-    console.log(props.review.rating)
   return (
     <div>
         <div className="col-sm-8 col-md-8">
