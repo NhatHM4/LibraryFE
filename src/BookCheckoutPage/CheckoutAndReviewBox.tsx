@@ -7,14 +7,15 @@ const CheckoutAndReviewBox: React.FC<{
   mobile: boolean;
   currentLoansCount: number;
   isAuthenticated: boolean | undefined;
-  isCheckedOut : boolean
+  isCheckedOut : boolean;
+  handleCheckout : any
 }> = (props) => {
 
     const buttonRender = ()=>{
         if (props.isAuthenticated){
             if (!props.isCheckedOut && props.currentLoansCount < 5) {
                 return (
-                    <button className="btn btn-success btn-lg">Checkout!!!</button>
+                    <button className="btn btn-success btn-lg" onClick={props.handleCheckout}>Checkout!!!</button>
                 )
             } else if (props.isCheckedOut){
                 return (
@@ -22,7 +23,7 @@ const CheckoutAndReviewBox: React.FC<{
                 )
             } else if (!props.isCheckedOut){
                 return (
-                    <p className="text-danger"></p>
+                    <p className="text-danger">Too many books checked out.</p>
                 )
             }
         }

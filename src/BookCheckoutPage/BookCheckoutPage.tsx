@@ -58,7 +58,7 @@ const BookCheckoutPage = () => {
       setIsLoading(false);
       setHttpError(error.message);
     });
-  }, []);
+  }, [isCheckedOut]);
 
   // useEffect review
   useEffect(() => {
@@ -127,7 +127,7 @@ const BookCheckoutPage = () => {
       setIsLoadingCurrentLoansCount(false)
       setHttpError(error.message)
     })
-  },[authState])
+  },[authState,isCheckedOut])
 
   useEffect(()=>{
     const fetchUserCheckedOutbook = async ()=>{
@@ -153,7 +153,7 @@ const BookCheckoutPage = () => {
       setIsLoadingBookCheckedOut(false)
       setHttpError(error.message)
     })
-  },[authState])
+  },[authState,isCheckedOut])
 
   if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingBookCheckedOut) {
     return <SpinLoading />;
@@ -163,6 +163,29 @@ const BookCheckoutPage = () => {
     <div className="container m-5">
       <p>{httpError}</p>
     </div>;
+  }
+
+  const handleCheckout = ()=>{
+    const putUserCheckedOutbook = async ()=>{
+      if (authState && authState.isAuthenticated){
+        const url = `http://localhost:8080/api/books/secure/checkout?bookId=${bookId}`;
+        const requestOptions = {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        };
+        const checkedOutResponse = await fetch(url, requestOptions)
+        if (!checkedOutResponse.ok){
+          throw new Error(' Something went wrong !!!')
+        }
+        setIsCheckout(true)
+      }
+    }
+    putUserCheckedOutbook().catch((error: any)=>{
+      setHttpError(error.message)
+    })
   }
 
   return (
@@ -189,7 +212,7 @@ const BookCheckoutPage = () => {
               <StarsReview rating={totalStars} size={32} />
             </div>
           </div>
-          <CheckoutAndReviewBox book={book} mobile={false} currentLoansCount={currentLoansCount} isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut} />
+          <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={false} currentLoansCount={currentLoansCount} isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut} />
         </div>
         <hr />
         <LastestReviews bookId={Number(bookId)} mobile={false} reviews={reviews} key={bookId}/>
@@ -215,7 +238,7 @@ const BookCheckoutPage = () => {
             <StarsReview rating={totalStars} size={32} />
           </div>
         </div>
-        <CheckoutAndReviewBox book={book} mobile={true}  currentLoansCount={currentLoansCount}  isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}  />
+        <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={true}  currentLoansCount={currentLoansCount}  isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}  />
         <hr />
         <LastestReviews bookId={Number(bookId)} mobile={true} reviews={reviews} key={bookId}/>
       </div>
