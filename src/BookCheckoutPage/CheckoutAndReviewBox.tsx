@@ -8,7 +8,8 @@ const CheckoutAndReviewBox: React.FC<{
   currentLoansCount: number;
   isAuthenticated: boolean | undefined;
   isCheckedOut : boolean;
-  handleCheckout : any
+  handleCheckout : any;
+  isReviewLeft : boolean;
 }> = (props) => {
 
     const buttonRender = ()=>{
@@ -29,6 +30,21 @@ const CheckoutAndReviewBox: React.FC<{
         }
         return (<Link to={"/login"} className="btn btn-success btn-lg">Sign in</Link>)
     }
+
+    const buttonRenderReview = ()=>{
+      if (props.isAuthenticated){
+          if (!props.isReviewLeft) {
+              return (
+                  <button className="btn btn-success btn-lg" onClick={props.handleCheckout}>Checkout!!!</button>
+              )
+          } else if (props.isReviewLeft){
+              return (
+                  <p><b>You reviewed !!!</b></p>
+              )
+          }
+      }
+      return (<Link to={"/login"} className="btn btn-success btn-lg">Sign in</Link>)
+  }
 
 
   return (
@@ -68,7 +84,7 @@ const CheckoutAndReviewBox: React.FC<{
         <p className="mt-3">
           This number can change until placing order has been complete.
         </p>
-        <p>Sign in to be able to leave a review</p>
+        {buttonRenderReview()}
       </div>
     </div>
   );

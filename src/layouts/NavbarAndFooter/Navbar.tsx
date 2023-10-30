@@ -13,6 +13,8 @@ const Navbar = () => {
 
   const handleLogout =async () => oktaAuth.signOut()
 
+  console.log(authState)
+
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark main-color py-3">

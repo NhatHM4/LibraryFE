@@ -6,7 +6,6 @@ import CheckoutAndReviewBox from "./CheckoutAndReviewBox";
 import ReviewModel from "../models/ReviewModel";
 import LastestReviews from "./LastestReviews";
 import { useOktaAuth } from "@okta/okta-react";
-import { error } from "console";
 
 const BookCheckoutPage = () => {
 
@@ -20,6 +19,11 @@ const BookCheckoutPage = () => {
   const [reviews, setReviews] = useState<ReviewModel[]>([]);
   const [totalStars, setTotalStars] = useState<number>(0);
   const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+// Review Left
+const [isReviewLeft, setIsReviewLeft] = useState(false);
+const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
+
 
  // Loans count state
  const [currentLoansCount, setCurrentLoansCount] = useState(0);
@@ -155,7 +159,35 @@ const BookCheckoutPage = () => {
     })
   },[authState,isCheckedOut])
 
-  if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingBookCheckedOut) {
+  useEffect(()=>{
+    const fetchUserReviewBook = async ()=>{
+      if (authState && authState.isAuthenticated){
+        const url = `http://localhost:8080/api/reviews/secure/user/book?bookId=${bookId}`;
+        const requestOptions = {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        };
+        const isReviewLeftResponse = await fetch(url, requestOptions)
+        if (!isReviewLeftResponse.ok){
+          throw new Error(' Something went wrong !!!')
+        }
+        const isReviewLeftJson = await isReviewLeftResponse.json();
+        setIsReviewLeft(isReviewLeftJson)
+        console.log(isReviewLeftJson)
+      }
+      setIsLoadingUserReview(false)
+    }
+    
+    fetchUserReviewBook().catch((error: any)=>{
+      setIsLoadingUserReview(false)
+      setHttpError(error.message)
+    })
+  },[authState])
+
+  if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingBookCheckedOut || isLoadingUserReview) {
     return <SpinLoading />;
   }
 
@@ -164,6 +196,8 @@ const BookCheckoutPage = () => {
       <p>{httpError}</p>
     </div>;
   }
+
+  console.log(isReviewLeft)
 
   const handleCheckout = ()=>{
     const putUserCheckedOutbook = async ()=>{
@@ -187,6 +221,7 @@ const BookCheckoutPage = () => {
       setHttpError(error.message)
     })
   }
+
 
   return (
     <div>
@@ -212,7 +247,8 @@ const BookCheckoutPage = () => {
               <StarsReview rating={totalStars} size={32} />
             </div>
           </div>
-          <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={false} currentLoansCount={currentLoansCount} isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut} />
+          <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={false} currentLoansCount={currentLoansCount} 
+          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut} isReviewLeft={isReviewLeft} />
         </div>
         <hr />
         <LastestReviews bookId={Number(bookId)} mobile={false} reviews={reviews} key={bookId}/>
@@ -238,7 +274,8 @@ const BookCheckoutPage = () => {
             <StarsReview rating={totalStars} size={32} />
           </div>
         </div>
-        <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={true}  currentLoansCount={currentLoansCount}  isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}  />
+        <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={true}  currentLoansCount={currentLoansCount}
+          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}   isReviewLeft={isReviewLeft}/>
         <hr />
         <LastestReviews bookId={Number(bookId)} mobile={true} reviews={reviews} key={bookId}/>
       </div>
