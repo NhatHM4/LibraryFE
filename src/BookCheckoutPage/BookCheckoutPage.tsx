@@ -105,7 +105,7 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
       setIsLoadingReview(false);
       setHttpError(error.message)
     });
-  }, [book]);
+  }, [book, isReviewLeft]);
 
   useEffect(()=>{
     const fetchUserCurrentLoansCount = async () =>{

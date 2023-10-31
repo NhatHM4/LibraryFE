@@ -1,6 +1,7 @@
 import React from "react";
 import BookModel from "../models/BookModel";
 import { Link } from "react-router-dom";
+import LeaveAReview from "../layouts/Utils/LeaveAReview";
 
 const CheckoutAndReviewBox: React.FC<{
   book: BookModel | undefined;
@@ -14,7 +15,7 @@ const CheckoutAndReviewBox: React.FC<{
 
     const buttonRender = ()=>{
         if (props.isAuthenticated){
-            if (!props.isCheckedOut && props.currentLoansCount < 5) {
+            if (!props.isCheckedOut && props.currentLoansCount <  5) {
                 return (
                     <button className="btn btn-success btn-lg" onClick={props.handleCheckout}>Checkout!!!</button>
                 )
@@ -32,18 +33,15 @@ const CheckoutAndReviewBox: React.FC<{
     }
 
     const buttonRenderReview = ()=>{
-      if (props.isAuthenticated){
-          if (!props.isReviewLeft) {
-              return (
-                  <button className="btn btn-success btn-lg" onClick={props.handleCheckout}>Checkout!!!</button>
-              )
-          } else if (props.isReviewLeft){
-              return (
-                  <p><b>You reviewed !!!</b></p>
-              )
-          }
+      if (props.isAuthenticated && !props.isReviewLeft){
+          return (
+          <p>
+            <LeaveAReview/>
+          </p>)
+      } else if (props.isAuthenticated && props.isReviewLeft){
+        return (<p><b>Thank you for your review</b></p>)
       }
-      return (<Link to={"/login"} className="btn btn-success btn-lg">Sign in</Link>)
+      return (<div><hr/>Sign in to be able to leave a review</div>)
   }
 
 
