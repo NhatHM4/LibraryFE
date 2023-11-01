@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import StarsReview from "./StarsReview";
 
-const LeaveAReview: React.FC<{}> = (props) => {
+const LeaveAReview: React.FC<{bookId: number | undefined; handleSubmitReview :any}> = (props) => {
   const [startInput, setStarInput] = useState(0);
   const [displayInput, setDisplayInput] = useState(false)
   const [reviewDecription, setReviewDecription] = useState('')
@@ -10,6 +10,11 @@ const LeaveAReview: React.FC<{}> = (props) => {
   const starValue = (value : number) =>{
     setStarInput(value);
     setDisplayInput(true)
+  }
+
+  const handleSubmit = (event : any)=>{
+      event.preventDefault();
+    props.handleSubmitReview(props.bookId, startInput, reviewDecription )
   }
 
   return (
@@ -47,7 +52,7 @@ const LeaveAReview: React.FC<{}> = (props) => {
                     </textarea>
                 </div>
                 <div>
-                    <button type="button" className="btn btn-primary mt-3">Submit Review</button>
+                    <button type="button" className="btn btn-primary mt-3" onClick={handleSubmit}>Submit Review</button>
                 </div>
             </form>
         }

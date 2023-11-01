@@ -11,6 +11,7 @@ const CheckoutAndReviewBox: React.FC<{
   isCheckedOut : boolean;
   handleCheckout : any;
   isReviewLeft : boolean;
+  handleSubmitReview : any
 }> = (props) => {
 
     const buttonRender = ()=>{
@@ -35,9 +36,8 @@ const CheckoutAndReviewBox: React.FC<{
     const buttonRenderReview = ()=>{
       if (props.isAuthenticated && !props.isReviewLeft){
           return (
-          <p>
-            <LeaveAReview/>
-          </p>)
+            <LeaveAReview handleSubmitReview={props.handleSubmitReview} bookId={props.book?.id} />
+)
       } else if (props.isAuthenticated && props.isReviewLeft){
         return (<p><b>Thank you for your review</b></p>)
       }

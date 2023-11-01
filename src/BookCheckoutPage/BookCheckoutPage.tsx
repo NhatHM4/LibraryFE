@@ -62,7 +62,7 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
       setIsLoading(false);
       setHttpError(error.message);
     });
-  }, [isCheckedOut]);
+  }, [isCheckedOut, isReviewLeft]);
 
   // useEffect review
   useEffect(() => {
@@ -176,7 +176,6 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
         }
         const isReviewLeftJson = await isReviewLeftResponse.json();
         setIsReviewLeft(isReviewLeftJson)
-        console.log(isReviewLeftJson)
       }
       setIsLoadingUserReview(false)
     }
@@ -197,7 +196,6 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
     </div>;
   }
 
-  console.log(isReviewLeft)
 
   const handleCheckout = ()=>{
     const putUserCheckedOutbook = async ()=>{
@@ -218,6 +216,35 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
       }
     }
     putUserCheckedOutbook().catch((error: any)=>{
+      setHttpError(error.message)
+    })
+  }
+
+  const handleSubmitReview = (bookId: number, rating: number, reviewDecription: string)=>{
+    const postReviewBook = async ()=>{
+      if (authState && authState.isAuthenticated){
+        const data = {
+          bookId: bookId,
+          rating: rating,
+          reviewDescription: reviewDecription
+        }
+        const url = `http://localhost:8080/api/reviews/secure`;
+        const requestOptions = {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+        const checkedOutResponse = await fetch(url, requestOptions)
+        if (!checkedOutResponse.ok){
+          throw new Error(' Something went wrong !!!')
+        }
+        setIsReviewLeft(true)
+      }
+    }
+    postReviewBook().catch((error: any)=>{
       setHttpError(error.message)
     })
   }
@@ -248,7 +275,7 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
             </div>
           </div>
           <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={false} currentLoansCount={currentLoansCount} 
-          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut} isReviewLeft={isReviewLeft} />
+          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut} isReviewLeft={isReviewLeft} handleSubmitReview={handleSubmitReview} />
         </div>
         <hr />
         <LastestReviews bookId={Number(bookId)} mobile={false} reviews={reviews} key={bookId}/>
@@ -275,7 +302,7 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
           </div>
         </div>
         <CheckoutAndReviewBox handleCheckout = {handleCheckout} book={book} mobile={true}  currentLoansCount={currentLoansCount}
-          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}   isReviewLeft={isReviewLeft}/>
+          isAuthenticated={authState?.isAuthenticated} isCheckedOut={isCheckedOut}   isReviewLeft={isReviewLeft} handleSubmitReview={handleSubmitReview} />
         <hr />
         <LastestReviews bookId={Number(bookId)} mobile={true} reviews={reviews} key={bookId}/>
       </div>
