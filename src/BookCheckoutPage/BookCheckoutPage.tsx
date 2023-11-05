@@ -6,6 +6,7 @@ import CheckoutAndReviewBox from "./CheckoutAndReviewBox";
 import ReviewModel from "../models/ReviewModel";
 import LastestReviews from "./LastestReviews";
 import { useOktaAuth } from "@okta/okta-react";
+import ReviewRequestModel from "../models/ReviewRequestModel";
 
 const BookCheckoutPage = () => {
 
@@ -223,11 +224,7 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
   const handleSubmitReview = (bookId: number, rating: number, reviewDecription: string)=>{
     const postReviewBook = async ()=>{
       if (authState && authState.isAuthenticated){
-        const data = {
-          bookId: bookId,
-          rating: rating,
-          reviewDescription: reviewDecription
-        }
+        const reviewRqModel = new ReviewRequestModel(rating, bookId,reviewDecription);
         const url = `http://localhost:8080/api/reviews/secure`;
         const requestOptions = {
           method: 'POST',
@@ -235,7 +232,7 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
             Authorization: `Bearer ${authState.accessToken?.accessToken}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(reviewRqModel)
         };
         const checkedOutResponse = await fetch(url, requestOptions)
         if (!checkedOutResponse.ok){

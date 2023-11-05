@@ -2,6 +2,7 @@ import React from 'react'
 import ReviewModel from '../models/ReviewModel'
 import { Link } from 'react-router-dom'
 import Review from '../layouts/Utils/Review'
+import ReviewListPage from './ReviewListPage/ReviewListPage'
 
 interface LastestReviewsProps {
     reviews : ReviewModel[],
@@ -23,7 +24,7 @@ const LastestReviews: React.FC<LastestReviewsProps> = (props) => {
                         <Review review = {eachReview} key={eachReview.id}></Review>
                     ))}
                     <div className="m-3">
-                        <Link to="#" type='button' className='btn main-color btn-md text-white'>
+                        <Link to={`/reviewlist/${props.bookId}`} type='button' className='btn main-color btn-md text-white'>
                             Reach all review
                         </Link>
                     </div>

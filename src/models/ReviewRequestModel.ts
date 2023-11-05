@@ -1,12 +1,12 @@
 class ReviewRequestModel {
     rating : number;
     bookId : number;
-    reviewDecription?: string
+    reviewDescription?: string
 
-    constructor(rating: number, bookId: number,  reviewDecription : string){
+    constructor(rating: number, bookId: number,  reviewDescription : string){
       this.rating = rating;
       this.bookId = bookId;
-      this.reviewDecription = reviewDecription;
+      this.reviewDescription = reviewDescription;
     }
 
 }

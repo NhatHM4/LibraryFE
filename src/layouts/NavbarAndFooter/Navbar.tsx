@@ -43,6 +43,13 @@ const Navbar = () => {
                 Search Book
               </NavLink>
             </li>
+              {authState.isAuthenticated &&
+            <li className="nav-item">
+                <NavLink className="nav-link" to='/shelf'>
+                Shelf
+                </NavLink>
+            </li>
+              }
           </ul>
           <ul className="navbar-nav ms-auto ">
 
