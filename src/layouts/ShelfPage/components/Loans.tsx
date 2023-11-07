@@ -4,6 +4,7 @@ import ShelfCurrentLoans from '../../../models/ShelfCurrentLoans';
 import BookModel from '../../../models/BookModel';
 import BookLoans from '../../Utils/BookLoans';
 import { useOktaAuth } from '@okta/okta-react';
+import { Link } from 'react-router-dom';
 
 
 const Loans = () => {
@@ -11,11 +12,12 @@ const Loans = () => {
     const [httpError, setHttpError] = useState("");
     const [shelfCurrentLoans, setShelfCurrentLoans] = useState<ShelfCurrentLoans[]>([]);
     const {authState} = useOktaAuth();
+    const [isReturn, setIsReturn] = useState(false)
+    const [isRenew, setIsRenew] = useState(false)
   
     // useEffect review
     useEffect(() => {
       const fetchData = async () => {
-        const baseUrl = `http://localhost:8080/api/books/secure/currentloans`;
         if (authState && authState.isAuthenticated){
             const baseUrl = `http://localhost:8080/api/books/secure/currentloans`;
             const requestOptions = {
@@ -35,8 +37,8 @@ const Loans = () => {
 
             const loadedShelf: ShelfCurrentLoans[] = [];
 
-
             for (const key in responseJson) {
+              const daysleft = responseJson[key].daysLeft;
                 const bookGet : BookModel = {
                     id: responseJson[key].book.id,
                     title: responseJson[key].book.title,
@@ -47,9 +49,10 @@ const Loans = () => {
                     category: responseJson[key].book.category,
                     img: responseJson[key].book.img,
                 }
+                
                 loadedShelf.push({
-                    book : bookGet, 
-                    daysLeft : responseJson[key].daysLeft
+                  book: bookGet,
+                  daysLeft: daysleft
                 });
             }
             setShelfCurrentLoans(loadedShelf);
@@ -60,9 +63,9 @@ const Loans = () => {
         setIsLoadingShelf(false);
         setHttpError(error.message);
       });
-    }, []);
+      window.scrollTo(0,0)
+    }, [authState, isReturn, isRenew]);
 
-    console.log(shelfCurrentLoans)
   
   
     if (isLoadingShelf) {
@@ -74,6 +77,7 @@ const Loans = () => {
         <p>{httpError}</p>
       </div>
     }
+
     return (
         <div className={"row mt-1"}>
           <h4 className='m-2'> Current Loans : </h4>
@@ -82,13 +86,18 @@ const Loans = () => {
             {shelfCurrentLoans.length > 0 ? (
               <>
                 {shelfCurrentLoans.map((eachShelf) => (
-                  <BookLoans shelfCurrentLoans={eachShelf} key={eachShelf.book.id}/>
+                  <BookLoans shelfCurrentLoans={eachShelf} key={eachShelf.book.id} setIsReturn={setIsReturn} isReturn={isRenew} setIsRenew={setIsRenew} isRenew={isRenew}/>
                 ))}
               </>
             ) : (
-              <div className="m-3">
-                <p className="lead">Currently there are no reviews for this book</p>
-              </div>
+              <>
+                  <h3 className='mt-3'>
+                      Currently no loans
+                  </h3>
+                  <Link className='btn btn-primary' to={`search`}>
+                      Search for a new book
+                  </Link>
+              </>
             )}
            
           </div>
