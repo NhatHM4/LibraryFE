@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import PostNewMessage from './components/PostNewMessage';
+import Message from './components/Message';
 
 const MessagePage = () => {
     const [messagesClick, setMessagesClick] = useState(false);
-
 
   return (
    <div className='container'>
@@ -28,7 +28,7 @@ const MessagePage = () => {
                            <PostNewMessage/>
                     </div>
                     <div className='tab-pane fade' id='nav-message' role='tabpanel' aria-labelledby='nav-message-tab'>
-                        Messages
+                       { messagesClick ? <Message/> : <></>} 
                     </div>
                 </div>
         </div>
