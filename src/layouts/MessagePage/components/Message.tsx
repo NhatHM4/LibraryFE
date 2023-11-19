@@ -71,9 +71,9 @@ return (
                             <hr/>
                             <div>
                                 <h5>Response: </h5>
-                                {message.response && message.adminEmail ? 
+                                {message.response && message.admin_email ? 
                                     <>
-                                        <h6>{message.adminEmail} (admin)</h6>
+                                        <h6>{message.admin_email} (admin)</h6>
                                         <p>{message.response}</p>
                                     </>
                                     :

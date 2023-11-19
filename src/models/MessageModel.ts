@@ -3,7 +3,7 @@ class MessageModel {
     question : string;
     id? : number;
     userEmail? : string;
-    adminEmail? : string;
+    admin_email? : string;
     response? : string;
     closed? : boolean;
 
