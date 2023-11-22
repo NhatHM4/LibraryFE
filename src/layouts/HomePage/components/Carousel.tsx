@@ -12,7 +12,7 @@ const Carousel = () => {
   const [httpError, setHttpError] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
-      const baseUrl = "http://localhost:8080/api/books";
+      const baseUrl = `${process.env.REACT_APP_API}/books`;
       const url = `${baseUrl}?page=0&size=5`;
       const response = await fetch(url);
 

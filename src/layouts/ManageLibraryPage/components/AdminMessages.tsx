@@ -29,7 +29,7 @@ const AdminMessages = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (authState && authState.isAuthenticated){
-          const baseUrl = `http://localhost:8080/api/messages/search/findByClosed?closed=false&page=${currentPage-1}&size=${messagesPerPage}`
+          const baseUrl = `${process.env.REACT_APP_API}/messages/search/findByClosed?closed=false&page=${currentPage-1}&size=${messagesPerPage}`
           const requestOptions = {
               method: 'GET'
           };
@@ -71,7 +71,7 @@ const handleSubmitRespose= async (id: number, response : string)=>{
 
       if (authState && authState.isAuthenticated){
         const message : AdminMessageRequest = new AdminMessageRequest(id, response);
-        const url = `http://localhost:8080/api/messages/secure/add/message`;
+        const url = `${process.env.REACT_APP_API}/messages/secure/add/message`;
         const requestOptions = {
           method: 'PUT',
           headers: {

@@ -21,7 +21,7 @@ const PostNewMessage = () => {
                 return;
             }
             const message : MessageModel = new MessageModel(title, question);
-            const url = `http://localhost:8080/api/messages/secure/add/message`;
+            const url = `${process.env.REACT_APP_API}/messages/secure/add/message`;
             const requestOptions = {
               method: 'POST',
               headers: {

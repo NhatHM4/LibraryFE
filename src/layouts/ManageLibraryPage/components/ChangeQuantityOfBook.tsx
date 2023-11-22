@@ -17,7 +17,7 @@ const ChangeQuantityOfBook : React.FC<{book: BookModel, deleteBookf : any, setCu
 
     const increaseQuantity = async (bookId : number)=>{
         if (authState && authState.isAuthenticated){
-            const url = `http://localhost:8080/api/admin/secure/increase/book/quantity?bookId=${bookId}`;
+            const url = `${process.env.REACT_APP_API}/admin/secure/increase/book/quantity?bookId=${bookId}`;
             const requestOptions = {
               method: 'PUT',
               headers: {
@@ -36,7 +36,7 @@ const ChangeQuantityOfBook : React.FC<{book: BookModel, deleteBookf : any, setCu
 
     const decreaseQuantity = async (bookId : number)=>{
         if (authState && authState.isAuthenticated){
-            const url = `http://localhost:8080/api/admin/secure/decrease/book/quantity?bookId=${bookId}`;
+            const url = `${process.env.REACT_APP_API}/admin/secure/decrease/book/quantity?bookId=${bookId}`;
             const requestOptions = {
               method: 'PUT',
               headers: {
@@ -55,7 +55,7 @@ const ChangeQuantityOfBook : React.FC<{book: BookModel, deleteBookf : any, setCu
 
     const deleteBook = async (bookId : number) =>{
         if (authState && authState.isAuthenticated){
-            const url = `http://localhost:8080/api/admin/secure/delete/book?bookId=${bookId}`;
+            const url = `${process.env.REACT_APP_API}/admin/secure/delete/book?bookId=${bookId}`;
             const requestOptions = {
               method: 'DELETE',
               headers: {

@@ -18,7 +18,7 @@ const Message = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (authState && authState.isAuthenticated){
-          const baseUrl = `http://localhost:8080/api/messages/search/findByUserEmail?userEmail=${authState.accessToken?.claims.sub}&page=${currentPage-1}&size=${size}`;
+          const baseUrl = `${process.env.REACT_APP_API}/messages/search/findByUserEmail?userEmail=${authState.accessToken?.claims.sub}&page=${currentPage-1}&size=${size}`;
           const requestOptions = {
               method: 'GET'
           };

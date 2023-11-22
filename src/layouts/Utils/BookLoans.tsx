@@ -9,7 +9,7 @@ const BookLoans:React.FC<{shelfCurrentLoans : ShelfCurrentLoans, setIsReturn : a
     const handleReturnBook = ()=>{
         const putReturnBook = async ()=>{
             if (authState && authState.isAuthenticated){
-            const url = `http://localhost:8080/api/books/secure/return?bookId=${props.shelfCurrentLoans.book.id}`;
+            const url = `${process.env.REACT_APP_API}/books/secure/return?bookId=${props.shelfCurrentLoans.book.id}`;
             const requestOptions = {
                 method: 'PUT',
                 headers: {
@@ -32,7 +32,7 @@ const BookLoans:React.FC<{shelfCurrentLoans : ShelfCurrentLoans, setIsReturn : a
     const handleRenewBook = ()=>{
         const putRenewBook = async ()=>{
             if (authState && authState.isAuthenticated){
-            const url = `http://localhost:8080/api/books/secure/renew?bookId=${props.shelfCurrentLoans.book.id}`;
+            const url = `${process.env.REACT_APP_API}/books/secure/renew?bookId=${props.shelfCurrentLoans.book.id}`;
             const requestOptions = {
                 method: 'PUT',
                 headers: {

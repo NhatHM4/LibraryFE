@@ -19,7 +19,7 @@ const Loans = () => {
     useEffect(() => {
       const fetchData = async () => {
         if (authState && authState.isAuthenticated){
-            const baseUrl = `http://localhost:8080/api/books/secure/currentloans`;
+            const baseUrl = `${process.env.REACT_APP_API}/books/secure/currentloans`;
             const requestOptions = {
                 method: 'GET',
                 headers: {

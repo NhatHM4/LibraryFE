@@ -18,7 +18,7 @@ const ReviewListPage = () => {
   // useEffect review
   useEffect(() => {
     const fetchData = async () => {
-      const baseUrl = `http://localhost:8080/api/reviews/search/findByBookId?bookId=${bookId}&page=${
+      const baseUrl = `${process.env.REACT_APP_API}/reviews/search/findByBookId?bookId=${bookId}&page=${
         currentPage - 1
       }&size=${size}`;
       const response = await fetch(baseUrl);

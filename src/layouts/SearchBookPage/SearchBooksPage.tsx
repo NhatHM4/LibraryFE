@@ -45,7 +45,7 @@ const SearchBooksPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const baseUrl = "http://localhost:8080/api/books";
+      const baseUrl = `${process.env.REACT_APP_API}/books`;
       let url : string = ''
       if (searchUrl === '') {
         url = `${baseUrl}?page=${currentPage-1}&size=${size}`;
