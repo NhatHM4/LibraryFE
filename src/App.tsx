@@ -13,6 +13,9 @@ import ReviewListPage from "./BookCheckoutPage/ReviewListPage/ReviewListPage";
 import ShelfPage from "./layouts/ShelfPage/ShelfPage";
 import MessagePage from "./layouts/MessagePage/MessagePage";
 import ManageLibraryPage from "./layouts/ManageLibraryPage/ManageLibraryPage";
+import PaymentPage from "./layouts/PaymentPage/PaymentPage";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const oktaAuth = new OktaAuth(oktaConfig)
@@ -61,9 +64,13 @@ export const App = () => {
           <SecureRoute path='/admin'>
             <ManageLibraryPage/>
           </SecureRoute>
+          <SecureRoute path='/fees'>
+            <PaymentPage/>
+          </SecureRoute>
         </Switch>
       </div>
       <Footer />
+      <ToastContainer />
       </Security>
     </div>
   );

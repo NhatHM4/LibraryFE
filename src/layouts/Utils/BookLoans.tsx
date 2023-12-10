@@ -1,11 +1,13 @@
 import React from 'react'
 import ShelfCurrentLoans from '../../models/ShelfCurrentLoans'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import LoansModal from '../ShelfPage/components/LoansModal'
 import { useOktaAuth } from '@okta/okta-react'
+import { useHistory } from 'react-router-dom';
 
 const BookLoans:React.FC<{shelfCurrentLoans : ShelfCurrentLoans, setIsReturn : any, setIsRenew: any, isReturn: boolean, isRenew : boolean}> = (props) => {
     const {authState} = useOktaAuth();
+    const history = useHistory();
     const handleReturnBook = ()=>{
         const putReturnBook = async ()=>{
             if (authState && authState.isAuthenticated){
@@ -24,6 +26,7 @@ const BookLoans:React.FC<{shelfCurrentLoans : ShelfCurrentLoans, setIsReturn : a
                 props.setIsReturn(!props.isReturn)
             }
         }
+        history.push("/fees")
         putReturnBook().catch((error: any)=>{
             throw new Error(' Return book fail !!')
         })

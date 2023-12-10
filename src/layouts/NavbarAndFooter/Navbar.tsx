@@ -49,7 +49,7 @@ const Navbar = () => {
                 Shelf
                 </NavLink>
             </li>
-          }
+             }
               {authState?.accessToken?.claims.userType === 'admin' &&
               <li className="nav-item">
                   <NavLink className="nav-link" to='/admin'>

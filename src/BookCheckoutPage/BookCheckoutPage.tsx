@@ -34,6 +34,9 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
  const [isCheckedOut, setIsCheckout] = useState(false)
  const [isLoadingBookCheckedOut, setIsLoadingBookCheckedOut] = useState(true)
 
+ //Payment
+ const [displayError, setDisplayError] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       const baseUrl = `${process.env.REACT_APP_API}/books/${bookId}`;
@@ -211,8 +214,10 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
         };
         const checkedOutResponse = await fetch(url, requestOptions)
         if (!checkedOutResponse.ok){
+          setDisplayError(true)
           throw new Error(' Something went wrong !!!')
         }
+        setDisplayError(false)
         setIsCheckout(true)
       }
     }
@@ -250,6 +255,9 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
   return (
     <div>
       <div className="container d-none d-lg-block">
+      {displayError && 
+        <div className="alert alert-danger mt-3"> Please pay out stading fees and/or return late book(s) </div>
+      }
         <div className="row mt-5">
           <div className="col-sm-2 col-md-2">
             {book?.img ? (
@@ -278,6 +286,9 @@ const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
         <LastestReviews bookId={Number(bookId)} mobile={false} reviews={reviews} key={bookId}/>
       </div>
       <div className="container d-lg-none mt-5">
+      {displayError && 
+        <div className="alert alert-danger mt-3"> Please pay out stading fees and/or return late book(s) </div>
+      }
         <div className="d-flex justify-content-center alighn-items-center">
           {book?.img ? (
             <img src={book?.img} width="226" height="349" alt="Book" />
