@@ -4,32 +4,42 @@ import { Link, Redirect } from 'react-router-dom'
 import LoansModal from '../ShelfPage/components/LoansModal'
 import { useOktaAuth } from '@okta/okta-react'
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { transfer } from '../../redux/action/counterActions';
+import { useSelector} from 'react-redux';
+import { TransferState } from '../../redux/reducers/tranferReducer'
 
 const BookLoans:React.FC<{shelfCurrentLoans : ShelfCurrentLoans, setIsReturn : any, setIsRenew: any, isReturn: boolean, isRenew : boolean}> = (props) => {
     const {authState} = useOktaAuth();
     const history = useHistory();
+    const dispatch = useDispatch();
+    const state = useSelector((state : TransferState) => state);
     const handleReturnBook = ()=>{
-        const putReturnBook = async ()=>{
+        const putReturnBook = async (callback: any)=>{
             if (authState && authState.isAuthenticated){
-            const url = `${process.env.REACT_APP_API}/books/secure/return?bookId=${props.shelfCurrentLoans.book.id}`;
-            const requestOptions = {
-                method: 'PUT',
-                headers: {
-                Authorization: `Bearer ${authState.accessToken?.accessToken}`,
-                'Content-Type': 'application/json'
+                const url = `${process.env.REACT_APP_API}/books/secure/return?bookId=${props.shelfCurrentLoans.book.id}`;
+                const requestOptions = {
+                    method: 'PUT',
+                    headers: {
+                    Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+                    'Content-Type': 'application/json'
+                    }
+                };
+                const checkedOutResponse = await fetch(url, requestOptions)
+                if (!checkedOutResponse.ok){
+                    throw new Error(' Something went wrong !!!')
                 }
-            };
-            const checkedOutResponse = await fetch(url, requestOptions)
-            if (!checkedOutResponse.ok){
-                throw new Error(' Something went wrong !!!')
-            }
                 props.setIsReturn(!props.isReturn)
             }
+            setTimeout(callback, 0); 
         }
-        history.push("/fees")
-        putReturnBook().catch((error: any)=>{
+        putReturnBook(()=>{
+            dispatch(transfer())
+             history.push("/fees")
+        }).catch((error: any)=>{
             throw new Error(' Return book fail !!')
         })
+        
     }
 
     const handleRenewBook = ()=>{

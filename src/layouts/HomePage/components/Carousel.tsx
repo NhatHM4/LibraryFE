@@ -134,7 +134,7 @@ const Carousel = () => {
 
       <div className="d-lg-none mt-3">
         <div className="row d-lex justify-content-center align-items-center">
-        <ReturnBook book={books[1]} key={books[1].id}/>
+        <ReturnBook book={books[1]} key={books[1]?.id}/>
         </div>
       </div>
 

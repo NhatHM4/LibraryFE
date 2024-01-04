@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useOktaAuth } from "@okta/okta-react";
 import SpinLoading from "../Utils/SpinLoading";
-
-import {toast } from 'react-toastify';
+import { useSelector} from 'react-redux';
+import { TransferState } from '../../redux/reducers/tranferReducer'
+import { toast } from 'react-toastify';
 
 
 
@@ -13,6 +14,8 @@ const PaymentPage = () => {
   const [fees, setFees] = useState(0);
   const [loadingFees, setLoadingFees] = useState(false);
   const [refresh, setRefresh] = useState(false)
+  const isTransfer = useSelector((state : TransferState) => state.isTranfer);
+
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -60,7 +63,7 @@ const PaymentPage = () => {
   useEffect(() => {
     const fetchFee = async () => {
       if (authState && authState.isAuthenticated) {
-        const url = `${process.env.REACT_APP_API}/payments/search/findByUserEmail?userEmail=${authState.accessToken?.claims.sub}`;
+        const url = `${process.env.REACT_APP_API}/payments/search/findByUserEmail?userEmail=${authState?.accessToken?.claims.sub}`;
         const requestOptions = {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -78,7 +81,7 @@ const PaymentPage = () => {
       setLoadingFees(false);
       setHttpError(error.message);
     });
-  }, [authState, refresh]);
+  }, [authState, refresh, isTransfer]);
 
   const handlePay = () => {
     const putReturnBook = async () => {
@@ -114,7 +117,6 @@ const PaymentPage = () => {
   if (httpError) {
     return <div className="container m-5">{httpError}</div>;
   }
-
   return (
     <div className="container">
       {fees > 0 && (
@@ -132,10 +134,11 @@ const PaymentPage = () => {
           </button>
         </div>
       )}
-      {
+      {/* {
         fees <= 0 &&
         <h1 className="navbar-brand">Nothing to Pay !!!</h1>
-      }
+      } */}
+      {isTransfer ? <span>true</span> : <span>false</span>}
     </div>
   );
 };
